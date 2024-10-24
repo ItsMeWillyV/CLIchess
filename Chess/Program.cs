@@ -24,22 +24,51 @@
                         return;
                     }
                     
-                    // Check for invalid selectedPieces
-                    else if (selectedPiece.Length != 2 || !int.TryParse(selectedPiece.Substring(1,1), out int pieceRow)) Console.WriteLine("Invalid input - expected a postion. Example: b2");
+                    // Check for invalid input
+                    else if (selectedPiece.Length != 2 || !int.TryParse(selectedPiece.Substring(1,1), out int pieceRow)) Console.WriteLine("Invalid input - Expected a position. Example: b2");
                     else {
-                        // Get cloumn number
+                        // Get column number
                         int pieceColumn = (int)selectedPiece.ToUpper()[0] - 64;
 
                         // Check if the position is outside the bounds of the board
-                        if (pieceRow < 1 || pieceRow > 8 || pieceColumn < 1 || pieceColumn > 8) Console.WriteLine("Invalid input - out of bounds.");
+                        if (pieceRow < 1 || pieceRow > 8 || pieceColumn < 1 || pieceColumn > 8) Console.WriteLine("Invalid input - Out of bounds.");
                         else {
+                            // Get piece as a character
+                            char piece = pieces[(pieceRow - 1) * 8 + (pieceColumn - 1)];
+
+                            // Check if piece does not exist
                             if (pieces[(pieceRow - 1) * 8 + (pieceColumn - 1)] == ' ') Console.WriteLine("Invalid input - no piece at this position.");
 
+                            // Check if the other player owns the piece
+                            else if (turn % 2 == 1 && !char.IsUpper(piece) || turn % 2 == 0 && char.IsUpper(piece)) Console.WriteLine("Invalid input - This piece does not belong to you!");
 
-                            // Next turn
-                            //Console.Clear();
-                            //turn++;
-                            //break;
+                            else {
+
+                                // Prompt
+                                Console.WriteLine($"Selected ${selectedPiece.ToLower()} ({piece})\nChoose a sqaure to move to or type \"%c\" to cancel.");
+
+                                // Pick square
+                                while (true) {
+                                    string selectedSquare = Console.ReadLine();
+
+                                    // Check if the user wants to cancel
+                                    if (selectedSquare == "%c") {
+                                        Console.Clear();
+                                        DrawBoard(pieces);
+                                        Console.WriteLine($"\nTurn {turn}\nIt is " + (turn % 2 == 1 ? "UPPERCASE" : "lowercase") + "'s turn.\nChoose a piece or type \"%q\" to quit.");
+                                        break;
+                                    }
+                                    // Check for invalid input
+                                    else if (selectedSquare.Length != 2 || !int.TryParse(selectedSquare.Substring(1, 1), out int squareRow)) Console.WriteLine("Invalid input - Expected a position. Example: b2");
+                                    else {
+                                        // Get column number
+                                        int squareColumn = (int)selectedSquare.ToUpper()[0] - 64;
+
+                                        // Check if the position is outside the bounds of the board
+                                        if (squareRow < 1 || squareRow > 8 || squareColumn < 1 || squareColumn > 8) Console.WriteLine("Invalid input - Out of bounds.");
+                                    }
+                                }
+                            }
                         }
                     }
                 }
