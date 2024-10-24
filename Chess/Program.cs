@@ -2,7 +2,7 @@
     internal class Program {
         static void Main() {
             // Initialize variables
-            string pieces = "pppppppprnbqkbnr                                PPPPPPPPRNBQKBNR";
+            string pieces = "rnbqkbnrpppppppp                                PPPPPPPPRNBQKBNR";
             int turn = 1;
 
             while (true) {
@@ -11,23 +11,37 @@
                 DrawBoard(pieces);
 
                 // Prompt
-                Console.WriteLine("\nIt is " + (turn % 2 == 1 ? "UPPERCASE" : "lowercase") + "'s turn.\nChoose a piece or type \"%q\" to quit.");
+                Console.WriteLine($"\nTurn {turn}\nIt is " + (turn % 2 == 1 ? "UPPERCASE" : "lowercase") + "'s turn.\nChoose a piece or type \"%q\" to quit.");
 
-                // Input loop
+                // Pick piece
                 while (true) {
-                    string input = Console.ReadLine();
+                    string selectedPiece = Console.ReadLine();
 
                     // Check if the user wants to quit playing this epic game :(
-                    if (input == "%q") {
+                    if (selectedPiece == "%q") {
                         Console.Clear();
                         Console.WriteLine("Thanks for playing!");
                         return;
                     }
+                    
+                    // Check for invalid selectedPieces
+                    else if (selectedPiece.Length != 2 || !int.TryParse(selectedPiece.Substring(1,1), out int pieceRow)) Console.WriteLine("Invalid input - expected a postion. Example: b2");
+                    else {
+                        // Get cloumn number
+                        int pieceColumn = (int)selectedPiece.ToUpper()[0] - 64;
 
-                    // Next turn
-                    Console.Clear();
-                    turn++;
-                    break;
+                        // Check if the position is outside the bounds of the board
+                        if (pieceRow < 1 || pieceRow > 8 || pieceColumn < 1 || pieceColumn > 8) Console.WriteLine("Invalid input - out of bounds.");
+                        else {
+                            if (pieces[(pieceRow - 1) * 8 + (pieceColumn - 1)] == ' ') Console.WriteLine("Invalid input - no piece at this position.");
+
+
+                            // Next turn
+                            //Console.Clear();
+                            //turn++;
+                            //break;
+                        }
+                    }
                 }
             }
         }
